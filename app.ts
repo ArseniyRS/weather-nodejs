@@ -1,9 +1,18 @@
 #!/usr/bin/env node
 
 import getArgs from "./getArgs.js";
-import {printHelp} from './services/log.service.js';
+import { getWeather } from "./services/api.service.js";
+import {printError, printHelp, printSuccess} from './services/log.service.js';
 import { saveKeyValue } from "./services/storage.service.js";
+async function saveToken(token: string){
 
+  try{
+    await saveKeyValue('token', token)
+    printSuccess('Токен сохранен')
+  }catch(e: any){
+    printError(e.message)
+  }
+}
 function initCLI() {
    const args: any = getArgs()
    console.log(args)
@@ -11,7 +20,8 @@ function initCLI() {
     printHelp()
    }
    if(args["-t"]){
-     saveKeyValue('token', args["-t"])
+    saveToken(args["-t"])
    }
+   getWeather('bishkek')
 }
 initCLI()

@@ -2,7 +2,8 @@
 export default function getArgs(){
   const res: Record<string, string | boolean | null | undefined> = {
     "-s": null,
-    "-h": null
+    "-h": null,
+    "-t": null
   }
   const [executer, file, ...rest] = process.argv
   rest.forEach((value: string, index, array) => {

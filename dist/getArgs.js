@@ -1,7 +1,8 @@
 export default function getArgs() {
     const res = {
         "-s": null,
-        "-h": null
+        "-h": null,
+        "-t": null
     };
     const [executer, file, ...rest] = process.argv;
     rest.forEach((value, index, array) => {
