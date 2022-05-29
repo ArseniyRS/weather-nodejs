@@ -1,7 +1,7 @@
 
-export default function getArgs(){
+export default function getCommands(){
   const res: Record<string, string | boolean | null | undefined> = {
-    "-s": null,
+    "-c": null,
     "-h": null,
     "-t": null
   }

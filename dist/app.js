@@ -8,10 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import getArgs from "./getArgs.js";
-import { getWeather } from "./services/api.service.js";
+import getCommands from "./getCommands.js";
+import { getWeather } from "./services/api.service/api.service.js";
 import { printError, printHelp, printSuccess } from './services/log.service.js';
-import { saveKeyValue } from "./services/storage.service.js";
+import { getKeyValue, saveKeyValue } from "./services/storage.service.js";
 function saveToken(token) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -24,14 +24,23 @@ function saveToken(token) {
     });
 }
 function initCLI() {
-    const args = getArgs();
-    console.log(args);
-    if (args["-h"]) {
-        printHelp();
-    }
-    if (args["-t"]) {
-        saveToken(args["-t"]);
-    }
-    getWeather('bishkek');
+    return __awaiter(this, void 0, void 0, function* () {
+        const cmds = getCommands();
+        const token = yield getKeyValue('token');
+        const city = yield getKeyValue('city');
+        if (cmds["-h"]) {
+            return printHelp();
+        }
+        if (cmds["-t"]) {
+            return saveToken(cmds["-t"]);
+        }
+        if (cmds["-c"]) {
+            return getWeather(cmds["-c"]);
+        }
+        if (token && city) {
+            return getWeather(city);
+        }
+        return printHelp();
+    });
 }
 initCLI();
