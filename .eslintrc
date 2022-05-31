@@ -4,7 +4,10 @@
     "es2021": true
   },
   "extends": [
-    "airbnb"
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -28,15 +31,6 @@
     // javascript
     "semi": 0,
     "camelcase": 1,
-    "no-console": [
-      "error",
-      {
-        "allow": [
-          "warn",
-          "error"
-        ]
-      }
-    ],
     "no-plusplus": "warn",
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],

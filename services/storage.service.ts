@@ -1,19 +1,19 @@
-import { homedir } from "os";
-import { join } from "path";
-import {promises} from 'fs'
+import { homedir } from 'os'
+import { join } from 'path'
+import { promises } from 'fs'
 const filePath = join(homedir(), 'weather-data.json')
 
-async function isExistPath(path: string){
-  try{
-  await promises.stat(path)
-  return true
-  }catch{
+async function isExistPath(path: string) {
+  try {
+    await promises.stat(path)
+    return true
+  } catch {
     return false
   }
 }
 
-async function getKeyValue(key: string){
-  if(await isExistPath(filePath)){
+async function getKeyValue(key: string) {
+  if (await isExistPath(filePath)) {
     const file = await promises.readFile(filePath)
     const data = JSON.parse(file.toString())
     return data[key]
@@ -21,9 +21,9 @@ async function getKeyValue(key: string){
   return undefined
 }
 
-async function saveKeyValue(key: string, value: string){
+async function saveKeyValue(key: string, value: string) {
   let data: Record<string, string> = {}
-  if(await isExistPath(filePath)){
+  if (await isExistPath(filePath)) {
     const file = await promises.readFile(filePath)
     data = JSON.parse(file.toString())
   }
@@ -31,4 +31,4 @@ async function saveKeyValue(key: string, value: string){
   await promises.writeFile(filePath, JSON.stringify(data))
 }
 
-export {getKeyValue, saveKeyValue}
+export { getKeyValue, saveKeyValue }
