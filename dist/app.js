@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { getCommands, ECmds } from './getCommands.js';
 import { getWeather } from './services/api.service/api.service.js';
-import { ELang, langDict, validateLangAndSave } from './services/lang.service/lang.service.js';
+import { ELang, langDict, saveLang } from './services/lang.service/lang.service.js';
 import { printError, printHelp, printSuccess } from './services/log.service.js';
-import { getKeyValue, saveKeyValue } from './services/storage.service.js';
+import { saveKeyValue } from './services/storage.service.js';
 function saveToken(token, lang = ELang.EN) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -36,10 +36,12 @@ function validateCmds(cmds, lang = ELang.EN) {
 function initCLI() {
     return __awaiter(this, void 0, void 0, function* () {
         const cmds = getCommands();
-        const token = yield getKeyValue('token');
-        const city = yield getKeyValue('city');
-        const lang = yield getKeyValue('lang');
-        validateLangAndSave(lang);
+        const lang = ELang.EN;
+        const city = '';
+        const token = '';
+        if (validateCmds(cmds, lang)) {
+            return;
+        }
         if (cmds[ECmds.HELP]) {
             return printHelp(undefined, lang);
         }
@@ -47,13 +49,10 @@ function initCLI() {
             return saveToken(cmds[ECmds.SET_TOKEN], lang);
         }
         if (cmds[ECmds.SET_LANG]) {
-            validateLangAndSave(lang);
+            return saveLang(cmds[ECmds.SET_LANG], lang);
         }
         if (cmds[ECmds.SET_CITY]) {
             return getWeather(cmds[ECmds.SET_CITY]);
-        }
-        if (validateCmds(cmds, lang)) {
-            return;
         }
         if (token && city) {
             return getWeather(city, lang);

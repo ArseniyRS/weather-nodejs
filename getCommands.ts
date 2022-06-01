@@ -24,7 +24,9 @@ export function getCommands() {
       if (array[index + 1]) {
         res[value as ECmds] = array[index + 1]
       } else {
-        res[value as ECmds] = undefined
+        if(value !==ECmds.HELP){
+          res[value as ECmds] = undefined
+        }
       }
     } else {
       res[value] = undefined

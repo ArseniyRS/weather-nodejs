@@ -1,5 +1,5 @@
 import { printError, printSuccess } from '../log.service.js'
-import { saveKeyValue } from '../storage.service.js'
+import { getKeyValue, saveKeyValue } from '../storage.service.js'
 import { ILang } from './lang.interface'
 
 export enum ELang {
@@ -13,10 +13,10 @@ export const langDict: ILang = {
     savedToken: 'Токен сохранен',
     savedLang: 'Язык сохранен',
     helpForHelp: '-h для вывода помощи',
-    helpForCity: '-s [CITY] для установки города',
+    helpForCity: '-c [CITY] для установки города',
     helpForToken: '-t [API_KEY] для установки токена',
     helpForLang: '-l [en/ru] для установки языка',
-    allHelp: `-s [CITY] для установки города
+    allHelp: `-c [CITY] для установки города
               -t [API_KEY] для установки токена
               -l [en/ru] для установки языка
               -h для вывода помощи`,
@@ -41,10 +41,10 @@ export const langDict: ILang = {
     error: 'Error',
     help: 'Help',
     helpForHelp: '-h for help',
-    helpForCity: '-s [CITY] for setting city',
+    helpForCity: '-c [CITY] for setting city',
     helpForToken: '-t [API_KEY] for setting token',
     helpForLang: '-l [en/ru] for setting language',
-    allHelp: `-s [CITY] for setting city
+    allHelp: `-c [CITY] for setting city
               -t [API_KEY] for setting token
               -l [en/ru] for setting language
               -h for help`,
@@ -70,18 +70,30 @@ export const langDict: ILang = {
   },
 }
 
+export function validateLang(langType: ELang, lang = ELang.EN) {
+  if (!langDict[langType]) {
+    printError(langDict[ELang.EN].setLangError)
+    return false
+  }
+  return true
+}
+
 export async function saveLang(langType: ELang, lang = ELang.EN) {
-  try {
-    await saveKeyValue('lang', langType)
-    printSuccess(langDict[lang].savedLang, lang)
-  } catch (e: any) {
-    printError(e.message)
+  if (validateLang(langType, lang)) {
+    try {
+      await saveKeyValue('lang', langType)
+      printSuccess(langDict[lang].savedLang, lang)
+    } catch (e: any) {
+      printError(e.message)
+    }
   }
 }
 
-export function validateLangAndSave(lang: ELang) {
-  if (!langDict[lang]) {
-    printError(langDict[ELang.EN].setLangError + '\n' + langDict[ELang.EN].setDefaultLang)
-    return saveLang(ELang.EN, ELang.EN)
+export async function getLang() {
+  const lang: ELang = await getKeyValue('lang')
+  if (lang && langDict[lang]) {
+    return lang
   }
+  await saveKeyValue('lang', ELang.EN)
+  return ELang.EN
 }

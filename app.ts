@@ -2,7 +2,7 @@
 
 import { getCommands, ECmds, ICommand } from './getCommands.js'
 import { getWeather } from './services/api.service/api.service.js'
-import { ELang, langDict, validateLangAndSave } from './services/lang.service/lang.service.js'
+import { ELang, getLang, langDict, saveLang } from './services/lang.service/lang.service.js'
 import { printError, printHelp, printSuccess } from './services/log.service.js'
 import { getKeyValue, saveKeyValue } from './services/storage.service.js'
 async function saveToken(token: string, lang = ELang.EN) {
@@ -27,8 +27,11 @@ async function initCLI() {
   const cmds: ICommand = getCommands()
   const token = await getKeyValue('token')
   const city = await getKeyValue('city')
-  const lang = await getKeyValue('lang')
-  validateLangAndSave(lang)
+  const lang = await getLang()
+
+  if (validateCmds(cmds, lang)) {
+    return
+  }
   if (cmds[ECmds.HELP]) {
     return printHelp(undefined, lang)
   }
@@ -36,14 +39,13 @@ async function initCLI() {
     return saveToken(cmds[ECmds.SET_TOKEN] as string, lang)
   }
   if (cmds[ECmds.SET_LANG]) {
-    validateLangAndSave(lang)
+    return saveLang(cmds[ECmds.SET_LANG] as ELang, lang)
   }
   if (cmds[ECmds.SET_CITY]) {
     return getWeather(cmds[ECmds.SET_CITY] as string)
   }
-  if (validateCmds(cmds, lang)) {
-    return
-  }
+
+  
   if (token && city) {
     return getWeather(city, lang)
   }
