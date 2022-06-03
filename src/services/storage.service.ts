@@ -3,6 +3,7 @@ import { join } from 'path'
 import { promises } from 'fs'
 const filePath = join(homedir(), 'weather-data.json')
 
+console.log(filePath)
 async function isExistPath(path: string) {
   try {
     await promises.stat(path)

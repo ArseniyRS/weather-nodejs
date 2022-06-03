@@ -28,8 +28,7 @@ async function initCLI() {
   const token = await getKeyValue('token')
   const city = await getKeyValue('city')
   const lang = await getLang()
-
-  if (validateCmds(cmds, lang)) {
+    if (validateCmds(cmds, lang)) {
     return
   }
   if (cmds[ECmds.HELP]) {
